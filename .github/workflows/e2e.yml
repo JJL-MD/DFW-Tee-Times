@@ -1,0 +1,110 @@
+name: e2e tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:        # manual trigger from the Actions UI
+
+# Cancel in-progress runs when a new commit lands
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vitest:
+    name: unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run lint
+
+      - name: Run vitest
+        run: npm test
+
+  e2e:
+    name: browser e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: vitest   # only run e2e after vitest passes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Apply D1 migrations (local mode)
+        run: npm run db:migrate:local
+
+      - name: Seed catalog
+        run: npm run db:seed:local
+
+      - name: Start wrangler dev
+        run: |
+          npx wrangler dev --port 8788 --ip 127.0.0.1 > wrangler.log 2>&1 &
+          echo "wrangler pid=$!"
+          # wait until wrangler serves /
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8788/ >/dev/null 2>&1; then
+              echo "wrangler ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "wrangler failed to start in 60s"
+          tail -100 wrangler.log
+          exit 1
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8788
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            test-results/
+            playwright-report/
+            wrangler.log
+          retention-days: 7
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7

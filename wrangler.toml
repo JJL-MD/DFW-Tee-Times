@@ -1,0 +1,39 @@
+name = "dfw-tee-times"
+main = "src/index.ts"
+compatibility_date = "2024-07-29"
+compatibility_flags = ["nodejs_compat"]
+
+# Availability scrape: every 15 minutes
+[triggers]
+crons = ["*/15 * * * *", "* * * * *"]
+
+# Booking daemon: every minute (see src/daemon/scheduler.ts for which jobs run on which tick)
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dfw-tee-times"
+database_id = "REPLACE_WITH_REAL_D1_ID_AFTER_FIRST_DEPLOY"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_REAL_KV_ID_AFTER_FIRST_DEPLOY"
+
+# Secrets (set via `wrangler secret put NAME`):
+#   VAULT_MASTER_KEY        - 32-byte hex for AES-GCM
+#   RESEND_API_KEY          - email notifications (optional)
+#   RESEND_FROM             - from address
+#   TWILIO_ACCOUNT_SID      - sms (optional)
+#   TWILIO_AUTH_TOKEN       - sms (optional)
+#   TWILIO_FROM_NUMBER      - sms sender
+#   FALLBACK_HOST_URL       - https://playwright.example.com
+#   FALLBACK_HOST_TOKEN     - shared secret for fallback host calls
+#   NOTIFY_EMAIL            - where to send notifications
+
+[vars]
+DEFAULT_TIMEZONE = "America/Chicago"
+SCRAPE_CONCURRENCY_PER_HOST = "1"
+SCRAPE_TIMEOUT_MS = "5000"
+CACHE_TTL_SECONDS = "600"
+CACHE_STALE_SECONDS = "1800"
+BOOKING_RETRY_MAX = "3"
+BOOKING_RETRY_BACKOFF_MS = "2000"

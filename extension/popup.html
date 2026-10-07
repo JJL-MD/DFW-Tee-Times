@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Copy cookies</title>
+  <style>
+    body { font-family: system-ui; padding: 12px; min-width: 280px; }
+    button { padding: 8px 12px; border-radius: 4px; background: #047857; color: white; border: 0; cursor: pointer; }
+    pre { background: #f1f5f9; padding: 8px; border-radius: 4px; font-size: 11px; max-height: 200px; overflow: auto; }
+    .row { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <label>Domain:
+      <input id="domain" value=".golfnow.com" style="width: 180px" />
+    </label>
+  </div>
+  <div class="row">
+    <button id="copy">Copy cookies as JSON</button>
+  </div>
+  <pre id="out">(click Copy)</pre>
+  <script src="popup.js"></script>
+</body>
+</html>

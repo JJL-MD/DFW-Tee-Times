@@ -1,0 +1,12 @@
+/* DFW Tee Times — minimal app styles (Tailwind via CDN handles the rest). */
+html, body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+input, select, button { font: inherit; }
+table { border-collapse: collapse; }
+
+/* Highlight active nav link */
+nav a.active { background: rgb(6 78 59); }
+
+/* Better mobile tap targets */
+@media (max-width: 640px) {
+  input, select, button { min-height: 44px; }
+}

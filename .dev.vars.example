@@ -1,0 +1,7 @@
+# Local dev secrets (copy to .dev.vars; never commit)
+VAULT_MASTER_KEY=0000000000000000000000000000000000000000000000000000000000000000
+FALLBACK_HOST_URL=http://localhost:8788
+FALLBACK_HOST_TOKEN=dev-fallback-token
+RESEND_API_KEY=
+RESEND_FROM=tee-times@localhost
+NOTIFY_EMAIL=you@example.com

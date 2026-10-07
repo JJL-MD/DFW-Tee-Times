@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "DFW Tee Times — Cookie Exporter",
+  "version": "0.1.0",
+  "description": "Copy provider cookies to JSON for the DFW Tee Times vault.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": ["cookies", "clipboardWrite"],
+  "host_permissions": [
+    "*://*.golfnow.com/*",
+    "*://*.teeoff.com/*",
+    "*://*.chronogolf.com/*",
+    "*://*.foreupsoftware.com/*",
+    "*://*.miclub.com/*",
+    "*://*.quick18.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

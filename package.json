@@ -1,0 +1,38 @@
+{
+  "name": "dfw-tee-times",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DFW tee-time aggregator + auto-booking (personal use)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
+    "lint": "tsc --noEmit",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "db:seed:local": "wrangler d1 execute DB --local --file=./scripts/seed.sql",
+    "keys:local": "node scripts/dev-keys.mjs"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.1",
+    "hono": "^4.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240712.0",
+    "@playwright/test": "^1.61.1",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.5.0",
+    "better-sqlite3": "^12.11.1",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "wrangler": "^3.78.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
