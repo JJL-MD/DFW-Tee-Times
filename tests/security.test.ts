@@ -29,7 +29,7 @@ describe("CSRF tokens", () => {
       ttlMs: 1000,
     });
     now += 5000;
-    expect(validateCsrfToken({ secret: "s", now: () => now })).toBe(false);
+    expect(validateCsrfToken({ secret: "s", now: () => now }, token)).toBe(false);
   });
 
   it("rejects malformed token", () => {

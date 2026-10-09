@@ -40,7 +40,7 @@ export class Observability {
   /** No-op sink for tests + local dev where AE isn't bound. */
   static noop: Observability = new Observability(undefined);
 
-  private readonly ae?: AnalyticsEngineDataset;
+  private readonly ae: AnalyticsEngineDataset | undefined;
 
   constructor(ae?: AnalyticsEngineDataset) {
     this.ae = ae;
@@ -94,21 +94,21 @@ export class Observability {
       this.emit({
         type,
         outcome,
-        provider,
+        provider: provider ?? "",
         durationMs: Date.now() - start,
         ...extra,
       });
       return result;
-    } catch (err) {
+      } catch (err) {
       this.emit({
         type,
         outcome: "fail",
-        provider,
+        provider: provider ?? "",
         durationMs: Date.now() - start,
         message: err instanceof Error ? err.message : String(err),
         ...extra,
       });
       throw err;
-    }
+      }
   }
 }
