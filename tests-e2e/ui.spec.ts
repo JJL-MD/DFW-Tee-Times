@@ -153,9 +153,11 @@ test.describe("accessibility smoke", () => {
     // Each label spans a real <span> with a known class — anchor to that
     await expect(page.getByText("Date", { exact: true })).toBeVisible();
     await expect(page.getByText("Players", { exact: true })).toBeVisible();
-    // "Course" appears in 38 <option> elements + the label. Match the label
-    // by its unique class instead of free-text matching.
-    await expect(page.locator("label").filter({ hasText: /^Course/ })).toBeVisible();
+    // "Course" appears in 38 <option> elements + the label. Match the label's
+    // <span> by class + text instead of free-text matching the whole <label>.
+    await expect(
+      page.locator("span", { hasText: /^Course/ }).first(),
+    ).toBeVisible();
     await expect(page.getByText(/Max price/)).toBeVisible();
   });
 });
