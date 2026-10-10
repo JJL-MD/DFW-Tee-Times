@@ -46,7 +46,8 @@ test.describe("homepage", () => {
 
     // Catalog accordion shows the 50 courses
     const details = page.locator("details");
-    await expect(details).toContainText(/courses$/);
+    await expect(details).toBeVisible();
+    await expect(details).toContainText(/Catalog \(50 courses\)/);
   });
 
   test("highlights the 9 priority courses in catalog", async ({ page }) => {
@@ -149,10 +150,12 @@ test.describe("accessibility smoke", () => {
 
   test("search form has labels for each field", async ({ page }) => {
     await page.goto("/");
-    // Each select should be preceded by a visible label
+    // Each label spans a real <span> with a known class — anchor to that
     await expect(page.getByText("Date", { exact: true })).toBeVisible();
     await expect(page.getByText("Players", { exact: true })).toBeVisible();
-    await expect(page.getByText(/Course/)).toBeVisible();
+    // "Course" appears in 38 <option> elements + the label. Match the label
+    // by its unique class instead of free-text matching.
+    await expect(page.locator("label").filter({ hasText: /^Course/ })).toBeVisible();
     await expect(page.getByText(/Max price/)).toBeVisible();
   });
 });
